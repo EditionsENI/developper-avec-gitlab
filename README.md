@@ -1,1 +1,1 @@
-# developper-avec-gitlab
+# Le DevOps en pratique avec GitLab
