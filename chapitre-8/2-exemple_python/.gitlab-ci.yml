@@ -1,0 +1,83 @@
+# Chaque job est testé séparément dans le chapitre 8
+image: python:3.9
+
+stages:
+  - build
+  - test
+
+build_dependencies:
+  stage: build
+  script:
+    - echo "Création de l'environnement virtuel et installation des dépendances"
+    - python -m venv .venv  # Crée un environnement virtuel
+    - .venv/bin/pip install mypy pylint pytest pytest-cov  # Installe les outils dans l'environnement virtuel
+    - ls -l .venv/bin/  # Vérifie que les binaires sont bien présents
+  artifacts:
+    paths :
+      - .venv # Répertoire contenant les dépendances installées
+    expire_in : 1 week # Durée de conservation des artefacts
+
+# Tests de linting avec pylint
+lint_code:
+  stage: test
+  script:
+    - echo "Analyse statique du code avec pylint"
+    - export PYTHONPATH="$PYTHONPATH:$CI_PROJECT_DIR/.venv"
+    - $CI_PROJECT_DIR/.venv/bin/pylint --output-format=colorized --exit-zero -v $CI_PROJECT_DIR/exemple_python/ 2>&1 | tee $CI_PROJECT_DIR/pylint_report.txt
+    - cat $CI_PROJECT_DIR/pylint_report.txt  # Vérifie le contenu
+  dependencies:
+    - build_dependencies
+  artifacts:
+    paths:
+      - pylint_report.txt
+    expire_in: 1 week  # Expire au bout d'une semaine
+  when: always
+  allow_failure: true
+
+# Tests de typage avec mypy
+type_check:
+  stage: test
+  script:
+    - echo "Analyse du typage avec mypy"
+    - export PYTHONPATH="$PYTHONPATH:$CI_PROJECT_DIR/.venv"
+    - $CI_PROJECT_DIR/.venv/bin/mypy $CI_PROJECT_DIR/exemple_python/ > $CI_PROJECT_DIR/mypy_report.txt 2>&1 || true
+    - cat $CI_PROJECT_DIR/mypy_report.txt  # Affiche le contenu du fichier pour débogage
+  dependencies:
+    - build_dependencies
+  artifacts:
+    paths:
+      - mypy_report.txt
+    expire_in: 1 week
+  when: always
+  allow_failure: true
+
+# Tests unitaires avec pytest et couverture de code
+unit_tests:
+  stage: test
+  script:
+    - echo "Exécution des tests unitaires avec pytest et mesure de la couverture"
+    - export PYTHONPATH="$PYTHONPATH:$CI_PROJECT_DIR/.venv"
+    - $CI_PROJECT_DIR/.venv/bin/pytest --cov=exemple_python --cov-report=xml --cov-report=term-missing tests/ --junitxml=unit_test_results.xml
+  dependencies:
+    - build_dependencies  # S'assure que l'environnement virtuel et pytest sont bien installés
+  artifacts:
+    reports:
+      junit: unit_test_results.xml  # Génère un rapport JUnit pour GitLab
+    paths:
+      - coverage.xml  # Fichier de couverture généré pour GitLab
+    when: always
+    expire_in: 1 week
+  coverage: '/TOTAL.*\s+(\d+)%/'  # Extraction du pourcentage de couverture
+  allow_failure: false  # Bloque le pipeline si un test échoue
+
+# Tests de fuzzing avec Atheris
+fuzz_test:
+  stage: test
+  before_script:
+    - apt-get update
+    - apt-get install -y python3.11-venv
+  script:
+    - python3 -m venv venv
+    - source venv/bin/activate
+    - pip install pytest atheris
+    - python tests/fuzz_test_password_gen.py -rss_limit_mb=1024 -max_total_time=60

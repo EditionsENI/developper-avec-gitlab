@@ -1,0 +1,12 @@
+stages:
+  - test
+  
+test_registry:
+  stage: test
+  script:
+  - echo "Vérification de la commande curl..."
+  - echo "DEPLOY_TOKEN = $DEPLOY_TOKEN"
+  - echo "DEPLOY_TOKEN_PASSWORD = $DEPLOY_TOKEN_PASSWORD"
+  - echo "CI_API_V4_URL = $CI_API_V4_URL"
+  - echo "CI_PROJECT_ID = $CI_PROJECT_ID"
+  - curl --user "$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/test-package/1.0/"

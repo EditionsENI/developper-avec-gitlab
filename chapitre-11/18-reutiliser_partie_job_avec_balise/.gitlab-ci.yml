@@ -1,0 +1,14 @@
+stages:
+  - build
+  - deploy
+
+include:
+  - project: "group/build"
+    ref: "main"
+    file: "/build.yml"
+
+deploy:
+  stage: deploy
+  script:
+   # - !reference [ .build_common, script ] # Nécessite un projet group/build
+    - scp myapp user@server:/var/www

@@ -1,0 +1,34 @@
+image: docker:latest
+
+services:
+  - docker:dind  # Nécessaire pour Docker dans Docker
+
+variables:
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE/test-image"
+  IMAGE_TAG: "latest"
+
+stages:
+  - build
+
+# Construction de l'image Docker et publication sur le registre GitLab
+build_image:
+  stage: build
+  script:
+    - echo "Authentification au registre..."
+    - docker login "$CI_REGISTRY" -u "$DEPLOY_TOKEN" -p "$DEPLOY_TOKEN_PASSWORD"
+    
+    - echo "Construction de l'image Docker..."
+    - docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
+
+    - echo "Publication de l'image sur GitLab Registry..."
+    - docker push "$IMAGE_NAME:$IMAGE_TAG"
+
+# Récupération et test de l'image 
+test_image:
+    stage: test
+    script:
+      - echo "Authentification au registre..."
+      - docker login "$CI_REGISTRY" -u "$DEPLOY_TOKEN" -p "$DEPLOY_TOKEN_PASSWORD"
+      - echo "Récupération et test de l'image..."
+      - docker pull "$IMAGE_NAME:$IMAGE_TAG"
+      - docker run --rm "$IMAGE_NAME:$IMAGE_TAG

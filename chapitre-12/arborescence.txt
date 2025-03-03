@@ -1,0 +1,22 @@
+# Arborescence du projet
+
+/mon-projet
+│── .gitignore              
+│── .gitlab-ci.yml          
+│── terraform/              
+│   ├── .env                
+│   ├── main.tf             
+│   ├── outputs.tf          
+│   ├── provider.tf         
+│   ├── terraform.tfvars    
+│   ├── variables.tf        
+
+# Arborescence Terraform avec commentaires
+
+│── terraform/     # Répertoire contenant les fichiers Terraform
+│   ├── .env       # Variables d'environnement (non versionné)
+│   ├── main.tf      # Configuration principale de Terraform
+│   ├── outputs.tf   # Définition des outputs Terraform
+│   ├── provider.tf         # Configuration du provider Azure
+│   ├── terraform.tfvars    # Variables personnalisées 
+│   ├── variables.tf        # Déclaration des variables

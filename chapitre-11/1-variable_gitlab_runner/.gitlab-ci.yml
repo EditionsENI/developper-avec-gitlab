@@ -1,0 +1,9 @@
+stages:
+  - build
+
+build_job:
+  stage: build
+  script:
+    - echo "Utilisation d'un répertoire temp" 
+    - mkdir -p "$MY_RUNNER_VAR"
+    - echo "Fichier temporaire" > "$MY_RUNNER_VAR\\temp.txt"

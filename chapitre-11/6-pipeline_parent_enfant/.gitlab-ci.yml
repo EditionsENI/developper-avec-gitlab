@@ -1,0 +1,19 @@
+stages:
+  - build
+  - test
+  - deploy
+
+trigger-build:
+  stage: build
+  trigger:
+    include: ".gitlab-ci.build.yml"
+
+trigger-tests:
+  stage: test
+  trigger:
+    include: ".gitlab-ci.tests.yml"
+
+trigger-deploy:
+  stage: deploy
+  trigger:
+    include: ".gitlab-ci.deploy.yml"

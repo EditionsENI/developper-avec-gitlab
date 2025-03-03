@@ -1,0 +1,33 @@
+stages:
+  - setup
+  - create
+  - display
+
+create_directory:
+  stage: setup
+  script:
+    - echo "Création d'un répertoire"
+    - mkdir -p my_directory
+  artifacts:
+    paths:
+      - my_directory
+
+create_file:
+  stage: create
+  script:
+    - echo "Création d'un fichier d'exemple avec du contenu"
+    - echo "Ceci est un exemple" > my_directory/example.txt
+  needs:
+    - create_directory  # Dépend de la création du répertoire
+  artifacts:
+    paths:
+      - my_directory/example.txt
+
+display_content:
+  stage: display
+  script:
+    - echo "Contenu du répertoire"
+    - ls -l my_directory
+    - cat my_directory/example.txt
+  needs:
+    - create_file  # Dépend de la création du fichier

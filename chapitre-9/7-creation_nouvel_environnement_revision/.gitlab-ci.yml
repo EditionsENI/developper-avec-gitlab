@@ -1,0 +1,22 @@
+stages:
+  - deploy
+  - cleanup
+
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Déploiement de l'application de révision pour ${CI_COMMIT_REF_SLUG}"
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}  # Nom dynamique basé sur la branche
+    url: https://review-${CI_COMMIT_REF_SLUG}.example.com
+  rules:
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != "main"'
+
+stop_review:
+  stage: cleanup
+  script:
+    - echo "Suppression de l'environnement de révision ${CI_COMMIT_REF_SLUG}"
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}
+    action: stop
+  when: manual  # Arrêt manuel pour éviter une suppression immédiatec

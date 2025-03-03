@@ -1,0 +1,32 @@
+stages :
+  - build
+  - test
+  - deploy
+
+build_setup:
+  stage: build
+  script:
+    - echo "Préparation de l’environnement avant le déploiement"
+    - mkdir app_folder
+    - touch build.txt
+  artifacts:
+    paths:
+    - app_folder
+    - build.txt
+
+test_files:
+  stage: test
+  script:
+    - echo "Vérification des fichiers nécessaires au déploiement"
+    - ls -ltr
+  dependencies:
+    - "build_setup"
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Déploiement de l'application"
+    - cp build.txt app_folder
+  dependencies:
+    - "build_setup"
+    - "test_files "

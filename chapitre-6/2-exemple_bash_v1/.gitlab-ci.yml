@@ -1,0 +1,23 @@
+stages:
+  - .pre
+  - deploy
+  - .post
+
+pre_setup:
+  stage : .pre
+  script:
+   - echo "Préparation de l'environnement avant le déploiement"
+   - mkdir app_folder
+   - touch build.txt
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Déploiement de l'application"
+    - cp build.txt app_folder
+
+post_cleanup :
+  stage: .post
+  script:
+    - echo "Nettoyage après le déploiement"
+    - rm -rf app_folder

@@ -1,0 +1,14 @@
+stages:
+  - test
+
+test_docker_login:
+  image: docker:latest
+  stage: test
+  services:
+    - docker:dind
+  script:
+    - echo "Test de connexion au registre de conteneurs GitLab"
+    - docker login $CI_REGISTRY -u "$DEPLOY_TOKEN" -p "$DEPLOY_TOKEN_PASSWORD"
+    - echo "Connexion réussie au registre"
+  only:
+    - main

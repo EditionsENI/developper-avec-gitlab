@@ -1,0 +1,21 @@
+stages:
+  - build
+  - test
+
+build-job:
+  stage: build
+  script:
+    - npm install
+  cache:
+    key: node-cache
+    paths:
+      - node_modules/
+
+test-job:
+  stage: test
+  script:
+    - npm test
+  cache:
+    key: node-cache
+    paths:
+      - node_modules/

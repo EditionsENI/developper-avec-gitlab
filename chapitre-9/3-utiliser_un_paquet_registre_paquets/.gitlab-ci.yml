@@ -1,0 +1,12 @@
+stages:
+  - test
+  
+use_package:
+  stage: test
+  script:
+    - echo "Téléchargement du package test-package.tar.gz..."
+    - curl --silent --show-error --fail --user "$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD" --output test-package.tar.gz "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/test-package/1.0/test-package.tar.gz"
+    - echo "Extraction du package..."
+    - tar -xzf test-package.tar.gz
+    - echo "Affichage du contenu du fichier test-file.txt..."
+    - cat test-file.txt

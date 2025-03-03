@@ -1,0 +1,12 @@
+# Fichier .gitlab-ci.yml (pipeline parent)
+variables:
+  GLOBAL_VAR: "Je suis héritée"
+  SECRET_VAR: "Je ne devrais pas être héritée"
+
+# Supppose l'existence d'un pipeline enfant
+trigger-child:
+  stage: deploy
+  trigger:
+    include: "child-pipeline.yml"
+  inherit:
+    variables: false  # Le pipeline enfant n'héritera aucune variable

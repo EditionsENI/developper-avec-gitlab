@@ -1,0 +1,14 @@
+# Fichier .gitlab-ci.yml (pipeline parent)
+stages:
+  - build
+  - test
+  - deploy
+
+trigger-child:
+  stage: deploy
+  trigger:
+    include: "child-pipeline.yml"
+  inherit:
+    default: false
+
+# Le pipeline enfant devra définir ses propres stages personnalisés

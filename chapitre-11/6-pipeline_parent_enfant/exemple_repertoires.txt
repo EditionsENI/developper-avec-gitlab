@@ -1,0 +1,9 @@
+# Exemple d'arborescence pour tester les pipelines parent/enfant
+
+/my-project
+│── .gitlab-ci.yml               # Pipeline principal
+│── .gitlab-ci.tests.yml         # Pipeline pour les tests
+│── .gitlab-ci.deploy.yml        # Pipeline pour le déploiement
+│── .gitlab-ci.build.yml         # Pipeline pour la compilation
+│── src/                         # Code source du projet
+│── README.md

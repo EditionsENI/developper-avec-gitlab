@@ -1,0 +1,14 @@
+stages:
+  - test
+  - publish
+
+publish_package:
+  stage: publish
+  script:
+    - echo "Création d'un fichier de test..."
+    - echo "Ceci est un fichier de test." > test-file.txt
+    - echo "Création du package test-package.tar.gz..."
+    - tar -czf test-package.tar.gz test-file.txt
+    - echo "Envoi du package au registre..."
+    - curl --user "$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD" --upload-file test-package.tar.gz "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/test-package/1.0/test-package.tar.gz"
+  allow_failure: false

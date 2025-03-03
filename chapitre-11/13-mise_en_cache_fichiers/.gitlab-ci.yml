@@ -1,0 +1,11 @@
+stages:
+  - cache
+
+cache-job:
+  stage: cache
+  script:
+    - echo "Exécution du job"
+  cache:
+    paths:
+      - node_modules/
+      - .m2/repository/

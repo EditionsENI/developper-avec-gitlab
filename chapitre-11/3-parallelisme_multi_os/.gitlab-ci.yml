@@ -1,0 +1,12 @@
+stages:
+  - build
+
+build-job:
+  stage: build
+  parallel:
+    matrix:
+      - OS: [linux, windows, macos]
+  script:
+    - if [[ "$OS" == "linux" ]]; then ./build-scripts/build-linux.sh; fi
+    - if [[ "$OS" == "macos" ]]; then ./build-scripts/build-macos.sh; fi
+    - if [[ "$OS" == "windows" ]]; then pwsh build-scripts/build-windows.ps1; fi

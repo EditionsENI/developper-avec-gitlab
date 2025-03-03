@@ -1,0 +1,12 @@
+stages:
+  - cache
+
+cache-job:
+  stage: cache
+  script:
+    - echo "Exécution du job"
+  cache:
+    key: build-cache
+    paths:
+      - build/
+    policy: push

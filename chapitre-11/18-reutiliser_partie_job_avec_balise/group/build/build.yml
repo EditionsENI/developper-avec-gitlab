@@ -1,0 +1,4 @@
+.build_common:
+  script:
+    - echo "Compilation du projet"
+    - make build

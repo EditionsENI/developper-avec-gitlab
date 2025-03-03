@@ -1,0 +1,24 @@
+stages:
+  - test
+  - deploy
+
+.common_settings: &common_settings
+  image: python:3.10
+  before_script:
+    - pip install -r requirements.txt
+
+.base_job:
+  <<: *common_settings  # Hérite de l'ancre YAML
+  stage: test
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+unit-tests:
+  extends: .base_job
+  script:
+    - pytest tests/unit
+
+integration-tests:
+  extends: .base_job
+  script:
+    - pytest tests/integration

@@ -1,0 +1,12 @@
+stages:
+  - deploy
+
+deploy_test_env:
+  stage: deploy
+  script:
+    - echo "Déploiement fictif en cours..."
+    - sleep 5
+    - echo "Déploiement terminé."
+  environment:
+    name: test-env
+    url: https://test.example.com

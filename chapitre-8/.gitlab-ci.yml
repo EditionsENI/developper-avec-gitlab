@@ -1,0 +1,24 @@
+image: golang:latest
+
+stages:
+  - build
+  - test
+
+compile_go:
+  stage: build
+  script:
+    - echo "Compilation du programme Go"
+    - cd exemple_go
+    - go build -o hello_world hello.go
+  artifacts:
+    paths:
+      - exemple_go/hello_world
+
+test_go:
+  stage: test
+  script:
+    - echo "Exécution du programme Go pour afficher Hello World"
+    - cd exemple_go
+    - ./hello_world
+  dependencies:
+    - compile_go

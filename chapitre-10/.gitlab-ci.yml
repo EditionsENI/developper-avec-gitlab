@@ -1,0 +1,42 @@
+stages:
+  - test
+
+variables:
+  SECRET_DETECTION_HISTORIC_SCAN: "true"
+  SECRET_DETECTION_EXCLUDED_PATHS: "logs,tmp"
+  DAST_WEBSITE: "http://mon_site_web.com"
+  DS_PIP_REQUIREMENTS_FILE: "custom_requirements.txt"
+  CS_IMAGE: "mon-registre.com/mon-image:latest"
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/SecretDetection.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+  - template: Security/SAST-IaC.latest.gitlab-ci.yml
+  - template: Security/License-Scanning.gitlab-ci.yml
+
+sast_custom:
+  stage: test
+  script: echo "Test SAST personnalisé"
+
+secret_detection_custom:
+  stage: test
+  script: echo "Test de détection de secrets personnalisé"
+
+dast_custom:
+  stage: test
+  script: echo "Test DAST personnalisé"
+
+dependency_scanning_custom:
+  stage: test
+  script: echo "Test d'analyse des dépendences personnalisé"
+
+test_iac:
+  stage: test
+  script: echo "Ceci est une simulation Terraform"
+
+test_conformité:
+  stage: test
+  script: echo "Ceci est un test de conformité des licences"

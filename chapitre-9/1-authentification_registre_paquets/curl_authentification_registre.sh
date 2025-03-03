@@ -1,0 +1,1 @@
+curl --user "$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/test-package/1.0/ 

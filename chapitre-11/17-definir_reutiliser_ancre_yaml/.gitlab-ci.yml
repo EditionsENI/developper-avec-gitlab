@@ -1,0 +1,20 @@
+stages:
+  - test
+
+.common_settings: &common_settings
+  image: python:3.10
+  stage: test
+  variables:
+    ENV: "development"
+  before_script:
+    - pip install -r requirements.txt
+
+unit-tests:
+  <<: *common_settings
+  script:
+    - pytest tests/unit
+
+integration-tests:
+  <<: *common_settings
+  script:
+    - pytest tests/integration

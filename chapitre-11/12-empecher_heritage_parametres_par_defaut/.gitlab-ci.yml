@@ -1,0 +1,11 @@
+# .gitlab-ci.yml (Pipeline parent)
+default:
+  before_script:
+    - echo "Ce script sera exécuté avant chaque job"
+
+trigger-child:
+  stage: deploy
+  trigger:
+    include: "child-pipeline.yml"
+  inherit:
+    default: false  # Le pipeline enfant n'héritera pas du before_script global

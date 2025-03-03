@@ -1,0 +1,9 @@
+stages:
+  - test
+
+test_csharp:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:7.0
+  script:
+    - dotnet test --filter "TestCategory=Category$CI_NODE_INDEX"
+  parallel: 4

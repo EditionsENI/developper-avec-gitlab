@@ -1,0 +1,1 @@
+docker login $CI_REGISTRY -u "$DEPLOY_TOKEN" -p "$DEPLOY_TOKEN_PASSWORD"

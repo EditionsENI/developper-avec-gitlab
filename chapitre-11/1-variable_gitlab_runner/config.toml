@@ -1,0 +1,27 @@
+toml
+CopierModifier
+concurrent = 1
+check_interval = 0
+connection_max_age = "15m0s"
+shutdown_timeout = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "Windows11-GitLab-Runner"
+  url = "https://gitlab.com"
+  id = 45311566
+  token = "glrt-t3_xxxxxxxxxx"
+  token_obtained_at = 2025-01-25T00:08:26Z
+  token_expires_at = 0001-01-01T00:00:00Z
+  executor = "shell"
+  shell = "pwsh"
+  [runners.custom_build_dir]
+  [runners.environment] # Nouvelle section
+    MY_RUNNER_VAR = "C:\\Temp\\GitLabRunner""
+  [runners.cache]
+    MaxUploadedArchiveSize = 0
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]

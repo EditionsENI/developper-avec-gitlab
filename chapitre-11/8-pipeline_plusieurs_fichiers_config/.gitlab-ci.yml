@@ -1,0 +1,12 @@
+# Fichier .gitlab-ci.yml (Pipeline principal)
+stages:
+  - build
+  - test
+  - deploy
+
+# Suppose l'existence des fichiers locaux suivants et un fichier situé sur un dépôt distant
+include:
+  - local: "build.yml"
+  - local: "test.yml"
+  - local: "deploy.yml"
+  - remote: https://raw.github.content.com/exemple/repo/main/ci/config.yml

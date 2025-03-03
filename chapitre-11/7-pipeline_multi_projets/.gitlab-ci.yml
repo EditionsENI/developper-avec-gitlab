@@ -1,0 +1,9 @@
+# Suppose l'existence d'un autre projet nommé backend dans le même groupe GitLab
+stages:
+  - deploy
+trigger-backend:
+  stage: deploy
+  trigger:
+    project: group/backend
+    branch: main
+    strategy: depend

@@ -1,0 +1,15 @@
+stages:
+  - deploy
+
+deploy-python-script:
+  stage: deploy
+  image: python:latest
+  parallel:
+    matrix:
+      - ARCH: [x86_64, arm64, powerpc]
+        CLOUD_PROVIDER: [aws, gcp, ibm]
+  script:
+    - echo "Déploiement du script sur $CLOUD_PROVIDER avec architecture $ARCH"
+    - if [ "$CLOUD_PROVIDER" == "aws" ]; then ./deploy-scripts/deploy-aws.sh; fi
+    - if [ "$CLOUD_PROVIDER" == "gcp" ]; then ./deploy-scripts/deploy-gcp.sh; fi
+    - if [ "$CLOUD_PROVIDER" == "ibm" ]; then ./deploy-scripts/deploy-ibm.sh; fi
