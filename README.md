@@ -1,6 +1,6 @@
 # Le DevOps en pratique avec GitLab
 
-Ce dépôt regroupe les commandes Git, les scripts et les fichiers de configuration utilisés dans l'ouvrage sur GitLab publié par les Éditions ENI. Il est structuré en répertoires correspondant aux chapitres du livre, chacun contenant des exemples illustrant des commandes ou du code source.
+Ce dépôt regroupe les commandes Git, les scripts et les fichiers de configuration utilisés dans l'ouvrage *Le DevOps en pratique avec GitLab* publié par les Éditions ENI. Il est structuré en répertoires correspondant aux chapitres du livre, chacun contenant des exemples illustrant des commandes ou du code source.
 
 Les Éditions ENI ne disposent d'un compte GitLab, mais vous pouvez facilement récupérer ce dépôt en suivant l'une des méthodes décrites dans la prochaine section.
 
@@ -20,7 +20,9 @@ Voici des liens qui documentent chaque méthode :
 
 ## Notes sur les versions et les outils utilisés
 
-Le contenu de ce dépôt a été élaboré avec les versions de Git, GitLab, Go, Python, Terraform et autres outils en vigueur au moment de la rédaction de l’ouvrage. Prenez note que certaines fonctionnalités, commandes ou syntaxes peuvent avoir été modifiées ou remplacées dans les versions subséquentes. Lorsque vous utilisez ces scripts et fichiers de configuration, assurez-vous de vérifier la compatibilité avec les versions actuelles des logiciels et de les adapter si nécessaire. Si vous constatez des différences significatives, nous vous recommandons de consulter la documentation officielle de Git, GitLab ou Terraform pour obtenir les dernières mises à jour.
+Le contenu de ce dépôt a été élaboré avec les versions de Git, GitLab, Go, Python, Terraform et autres outils en vigueur au moment de la rédaction de l’ouvrage. Prenez note que certaines fonctionnalités, commandes ou syntaxes peuvent avoir été modifiées ou remplacées dans les versions subséquentes. 
+
+Lorsque vous utilisez ces scripts et fichiers de configuration, assurez-vous de vérifier la compatibilité avec les versions actuelles des logiciels et de les adapter si nécessaire. Si vous constatez des différences significatives, nous vous recommandons de consulter la documentation officielle de Git, GitLab ou Terraform pour obtenir les dernières mises à jour.
 
 Savoir s’adapter aux évolutions des outils et gérer les changements de version fait partie intégrante du travail d’un professionnel DevOps. Il est essentiel de développer cette compétence et d’avoir conscience que toute automatisation nécessite de nombreux tests préalables avant de donner les résultats souhaités.
 
