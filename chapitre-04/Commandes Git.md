@@ -40,7 +40,6 @@ git remote show origin
 git push
 ```
 
-```bash
 - Récupérer les derniers commits d'un dépôt distant :
 
 ```bash
