@@ -21,7 +21,7 @@ git config --global user.name "Prénom Nom"
 - Ajouter le mail de l'utilisateur de Git :
 
 ```bash
-git config --global user.email " mon_mail@it-connect.com"
+git config --global user.email "mon_mail@eni.com"
 ```
 
 - Initialiser un dépôt Git
