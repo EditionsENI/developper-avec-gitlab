@@ -1,0 +1,121 @@
+# À tester progressivement un job à la fois
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+
+# Inclusion de modèles pour les tests
+include:
+  - local: tests-gitlab.yml  # Pipeline enfant pour l'analyse Terraform
+  - local: scanners-gitlab.yml  # Scanners natifs GitLab
+
+# Définition des variables d'environnement
+variables:
+  TF_VAR_ARM_SUBSCRIPTION_ID: $ARM_SUBSCRIPTION_ID
+  TF_VAR_ARM_CLIENT_ID: $ARM_CLIENT_ID
+  TF_VAR_ARM_CLIENT_SECRET: $ARM_CLIENT_SECRET
+  TF_VAR_ARM_TENANT_ID: $ARM_TENANT_ID
+  TF_STATE: "default" #  Nom du state Terraform
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/${TF_STATE} # Adresse du backend
+  TF_ROOT: "terraform" #  Emplacement du code Terraform
+  TF_VAR_ssh_public_key: $SSH_PUBLIC_KEY #  Ajout de la clé publique pour Terraform
+  TF_VAR_ssh_private_key: $SSH_PRIVATE_KEY_BASE64  #  Ajout de la clé privée pour Terraform
+  TF_VAR_gitlab_url: $GITLAB_URL
+  TF_VAR_gitlab_runner_token: $GITLAB_RUNNER_TOKEN
+
+# Mise en cache
+cache:
+  key: ${TF_STATE}
+  paths:
+    - ${TF_ROOT}/.terraform
+
+before_script:
+  - cd ${TF_ROOT}
+
+# Déclaration des étapes
+stages:
+  - linting
+  - security
+  - test
+  - approval
+  - validate
+  - build
+  - deploy
+  - destroy
+
+# Terraform init
+init:
+  stage: .pre
+  script:
+    - echo "Initialisation de Terraform..."
+    - gitlab-terraform init
+    - echo "L'initialisation de Terraform s'est terminée avec succès."
+
+# Terraform validate
+validate:
+  stage: validate
+  script:
+    - echo "Validation de de la syntaxe et de la validité des fichiers Terraform..."
+    - gitlab-terraform validate
+    - echo "La validation s'est terminée avec succès."
+
+# Terraform plan
+plan:
+  stage: build
+  script:
+    - echo "Création d'un plan d'exécution..."
+    - gitlab-terraform plan # Crée un plan d'exécution et génère un fichier plan.cache
+    - gitlab-terraform plan-json # Convertit le fichier plan.cache en un rapport JSON que GitLab peut afficher dans un MR
+    - echo "Le plan d'exécution a été créé avec succès."
+  artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
+
+# Approbation manuelle après l'exécution des tests
+manual_approval:
+  stage: approval
+  script:
+    - echo "Une ou plusieurs analyses de sécurité ont échoué. Approbation requise pour continuer."
+  when: manual  # Exige une validation manuelle, indépendamment du résultat
+  needs:
+    - job: checkov
+    - job: tfsec
+    - job: sast
+      optional: true
+    - job: secret_detection
+      optional: true
+    - job: iac_scanning
+      optional: true
+  allow_failure: true  # Ne bloque pas le pipeline si ce job échoue
+
+# Terraform apply
+apply:
+  stage: deploy
+  script:
+    - set -x  # Affiche toutes les commandes exécutées pour le debug
+    - mkdir -p logs  # Crée un répertoire pour stocker les logs
+    - echo "Déploiement de l'infrastructure vers Microsoft Azure..."
+    - gitlab-terraform apply | tee logs/terraform-apply.log  # Capture les logs
+    - echo "Le déploiement de l'infrastructure a été complété avec succès !"
+    - echo "Affichage du contenu du fichier output.tf pour avoir des informations d'accès à la VM"
+    - gitlab-terraform -- output
+  artifacts:
+    paths:
+      - ${TF_ROOT}/plan.cache  # Conserve l'état du déploiement en cache
+      - ${CI_PROJECT_DIR}/logs/terraform-apply.log  # Ajoute les logs Terraform comme artéfact
+    expire_in: 7 days  # Conserve les logs pendant 7 jours
+  needs:
+    - manual_approval  # Ne peut s'exécuter qu'après validation manuelle
+
+# Terraform destroy
+destroy:
+  stage: destroy
+  script:
+    - echo "Destruction des ressources déployées sur Microsoft Azure..."
+    - gitlab-terraform destroy
+    - echo "La destruction des ressources a été complétée avec succès !"
+  dependencies:
+    - apply
+  when: manual
+  only:
+    - main

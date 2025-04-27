@@ -1,0 +1,27 @@
+image: registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:latest
+
+stages:
+  - security_scans
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.gitlab-ci.yml
+
+sast:
+  stage: test
+  script:
+    - echo "Running SAST scan"
+  allow_failure: true  # Permet d'éviter le blocage du pipeline en cas d'échec
+
+secret_detection:
+  stage: test
+  script:
+    - echo "Running secret detection scan"
+  allow_failure: true  # Permet d'éviter le blocage du pipeline en cas d'échec
+
+iac_scanning:
+  stage: test
+  script:
+    - echo "Running IaC scanning"
+  allow_failure: true  # Permet d'éviter le blocage du pipeline en cas d'échec

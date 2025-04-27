@@ -1,0 +1,49 @@
+image: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+
+stages:
+  - linting
+  - security
+ 
+# Vérification du formatage du code Terraform
+terraform_fmt:
+  stage: linting
+  script:
+    - gitlab-terraform fmt -check
+  allow_failure: true  # Échoue si le formatage n'est pas correct
+
+# Installation et exécution de TFLint
+tflint:
+  stage: linting
+  image: debian:latest  # Corrigé : "latest" au lieu de "lates"
+  before_script:
+    - apt-get update && apt-get install -y curl unzip
+    - curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+  script:
+    - tflint --init
+    - tflint
+  allow_failure: true
+
+# Installation et exécution de Checkov (Analyse de sécurité)
+checkov:
+  stage: security
+  image: python:3.9  # Utilisation d'une image Python pour l'installation
+  before_script:
+    - pip install --upgrade pip
+    - pip install --upgrade packaging  # Met à jour packaging
+    - pip install checkov  # Réinstalle Checkov après mise à jour
+  script:
+    - checkov -d .
+  allow_failure: true # Permet au pipeline de continuer même si des failles sont détectées
+  
+
+# Installation et exécution de tfsec (Analyse avancée de sécurité)
+tfsec:
+  stage: security
+  image: alpine:latest  # Alpine pour plus de légèreté
+  before_script:
+    - apk add --no-cache curl
+    - curl -L https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -o /usr/local/bin/tfsec
+    - chmod +x /usr/local/bin/tfsec
+  script:
+    - tfsec .
+  allow_failure: true  # Permet au pipeline de continuer même si des vulnérabilités sont détectées
